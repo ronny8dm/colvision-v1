@@ -1,33 +1,28 @@
-from flask import jsonify, url_for
+from flask import request, jsonify
 from app import app
-import os
 from app.models.SamPredictor import SamPredictor
-import logging
+import os
+import cv2
+import numpy as np
 
 
-@app.route('/predict')
+@app.route('/predict', methods=['POST'])
 def predict():
     home = os.path.abspath(os.path.join(__file__, "../../.."))
-
     predictor = SamPredictor(home)
-    masks = predictor.predict()
 
-    logging.debug(f"Type of masks: {type(masks)}")
-    logging.debug(f"Content of masks: {masks}")
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided"}), 400
 
-    if isinstance(masks, list):
-        # Generate the annotated image
-        static_dir = os.path.join(app.root_path, 'static')
-        filename = 'annotated_image.jpg'
-        output_path = os.path.join(static_dir, filename)
+    file = request.files['image']
 
-        # Obtain the original image (you will need to implement this)
-        image_bgr = predictor.get_image()
+    filestr = file.read()
+    npimg = np.frombuffer(filestr, np.uint8)
+    image_bgr = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
-        # Save the annotated image using the new method
-        predictor.generate_annotated_image(masks, image_bgr, output_path)
+    masks = predictor.predict(image_bgr)
 
-        # Return the URL for the generated image
-        return jsonify({"annotated_image_url": url_for('static', filename=filename)})
+    if isinstance(masks, dict):
+        return jsonify(masks)
     else:
         return jsonify({"error": "Predictor did not return a list of dictionaries"}), 400
