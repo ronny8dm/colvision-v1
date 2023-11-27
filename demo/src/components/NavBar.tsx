@@ -27,9 +27,11 @@ const NavBar = ({ resetState }: NavBarProps) => {
                 to={"/"}
                 style={{ fontWeight: 700 }}
             >
-                <div>Segment Anything</div>
-                <div className="text-xs font-normal text-center text-gray-500 lg:text-sm md:text-start">
-                    Research by Meta AI
+                <div className="text-center">
+                    Colvision app
+                </div>
+                <div className="text-xs font-normal justify-items-center text-center text-gray-500 lg:text-sm md:text-start">
+                    Colour visualizer and colour matching
                 </div>
             </NavLink>
 
