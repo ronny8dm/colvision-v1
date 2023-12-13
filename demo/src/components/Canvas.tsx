@@ -115,7 +115,7 @@ const Canvas = ({
 
     const [shouldShowAnimation, setShouldShowAnimation] = useState<
         boolean | null
-    >(null);
+    >(false);
     const [hasTouchMoved, setHasTouchMoved] = useState(false);
     const [numOfTouches, setNumOfTouches] = useState(0);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -170,8 +170,8 @@ const Canvas = ({
 
     useEffect(() => {
         if (segmentTypes === "All") {
-            shouldAllAnimateRef.current = true;
-            setShouldAllAnimate(true);
+            shouldAllAnimateRef.current = false;
+            setShouldAllAnimate(false);
         } else {
             shouldAllAnimateRef.current = false;
             setShouldAllAnimate(false);
